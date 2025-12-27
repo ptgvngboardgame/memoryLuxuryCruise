@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <title>Memory Card Selector</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <style>
+            body {
+                background: linear-gradient(to right, #7A4415, #93541B, #63330D);
+            }
+
+            #board {
+                display: grid;
+                justify-content: center;
+            }
+
+            .card-item {
+                aspect-ratio: 4 / 5;
+                width: 120px;
+                cursor: pointer;
+                position: relative;
+                background-size: cover;
+                background-position: center;
+                transition: transform 0.2s ease;
+            }
+
+            .card-item:hover {
+                transform: scale(1.05);
+            }
+
+            .card-icon {
+                position: absolute;
+                width: 50%;
+                height: 50%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                pointer-events: none;
+                object-fit: cover;
+            }
+
+            /* ---------- OPTIONS ---------- */
+
+            .img-option {
+                width: 120px;
+                cursor: pointer;
+                transition: 0.2s;
+            }
+
+            .img-option:hover {
+                transform: scale(1.15);
+            }
+
+            .template-option {
+                width: 120px;
+                background-size: cover;
+                background-position: center;
+                position: relative;
+                cursor: pointer;
+                transition: 0.2s;
+            }
+
+            .template-option:hover {
+                transform: scale(1.15);
+            }
+
+            .template-option img {
+                position: absolute;
+                width: 50%;
+                height: 50%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                pointer-events: none;
+            }
+
+            /* ---------- EMPTY CARD ---------- */
+
+            .card-empty {
+                position: relative;
+                border-radius: 14px;
+                overflow: hidden;
+            }
+
+            .card-empty::before {
+                content: "";
+                position: absolute;
+                inset: 8px;
+                background: repeating-linear-gradient(
+                    45deg,
+                    #ddd,
+                    #ddd 10px,
+                    #f8f9fa 10px,
+                    #f8f9fa 20px
+                    );
+                border: 2px dashed #bbb;
+                border-radius: 10px;
+                pointer-events: none;
+            }
+
+            .empty-option {
+                position: relative;
+                font-size: 40px;
+                color: #999;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: 0.2s;
+            }
+
+            .empty-option::before {
+                content: "";
+                position: absolute;
+                inset: 5px 15px;
+                border: 2px dashed #999;
+                border-radius: 9px;
+                pointer-events: none;
+            }
+
+            .empty-option:hover {
+                transform: scale(1.15);
+                color: #666;
+            }
+        </style>
+    </head>
+
+    <body class="p-4">
+
+        <div class="container">
+            <div class="d-flex justify-content-center mb-4">
+                <div class="row g-3 align-items-end justify-content-center" style="max-width: 420px;">
+                    <div class="col-auto">
+                        <label class="form-label mb-1">Cột</label>
+                        <input type="number" id="cols" class="form-control" value="3" min="1" style="width:80px;">
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label mb-1">Dòng</label>
+                        <input type="number" id="rows" class="form-control" value="2" min="1" style="width:80px;">
+                    </div>
+                    <div class="col-auto">
+                        <button id="resetBtn" class="btn btn-primary px-3">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="board"></div>
+        </div>
+
+        <!-- MODAL -->
+        <div class="modal fade" id="imageModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content p-3">
+                    <div class="modal-body d-flex justify-content-center flex-wrap">
+
+                        <img src="https://res.cloudinary.com/dszq7efku/image/upload/v1766840376/texture_boardminigame_CardMatching_Default_ww0fgb.png"
+                             class="img-option">
+
+                        <div class="img-option empty-option">✕</div>
+
+                        <div class="template-option img-option"
+                             data-icon="images/texture_boardminigame_CardMatching_cardicon12.png"
+                             style="background-image:url('https://res.cloudinary.com/dszq7efku/image/upload/v1766840373/texture_boardminigame_CardMatching_cardbg_zclhbm.png')">
+                            <img src="https://res.cloudinary.com/dszq7efku/image/upload/v1766840374/texture_boardminigame_CardMatching_cardicon12_srkmnx.png">
+                        </div>
+
+                        <div class="template-option img-option"
+                             data-icon="images/texture_boardminigame_CardMatching_cardicon13.png"
+                             style="background-image:url('https://res.cloudinary.com/dszq7efku/image/upload/v1766840373/texture_boardminigame_CardMatching_cardbg_zclhbm.png')">
+                            <img src="https://res.cloudinary.com/dszq7efku/image/upload/v1766840374/texture_boardminigame_CardMatching_cardicon13_e8mj9v.png">
+                        </div>
+
+                        <div class="template-option img-option"
+                             data-icon="images/texture_boardminigame_CardMatching_cardicon14.png"
+                             style="background-image:url('https://res.cloudinary.com/dszq7efku/image/upload/v1766840373/texture_boardminigame_CardMatching_cardbg_zclhbm.png')">
+                            <img src="https://res.cloudinary.com/dszq7efku/image/upload/v1766840373/texture_boardminigame_CardMatching_cardicon14_mnqnwh.png">
+                        </div>
+
+                        <img src="https://res.cloudinary.com/dszq7efku/image/upload/v1766840373/texture_boardminigame_CardMatching_card1_evxtky.png" class="img-option">
+                        <img src="https://res.cloudinary.com/dszq7efku/image/upload/v1766840374/texture_boardminigame_CardMatching_card2_iusxkp.png" class="img-option">
+                        <img src="https://res.cloudinary.com/dszq7efku/image/upload/v1766840374/texture_boardminigame_CardMatching_card3_szwuch.png" class="img-option">
+                        <img src="https://res.cloudinary.com/dszq7efku/image/upload/v1766840374/texture_boardminigame_CardMatching_card4_y17yjg.png" class="img-option">
+                        <img src="https://res.cloudinary.com/dszq7efku/image/upload/v1766840373/texture_boardminigame_CardMatching_card5_uj2sjb.png" class="img-option">
+                        <img src="https://res.cloudinary.com/dszq7efku/image/upload/v1766840373/texture_boardminigame_CardMatching_card6_amflyt.png" class="img-option">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            const board = document.getElementById("board");
+            const colsInput = document.getElementById("cols");
+            const rowsInput = document.getElementById("rows");
+            const resetBtn = document.getElementById("resetBtn");
+
+            const modal = new bootstrap.Modal(document.getElementById("imageModal"));
+
+            const DEFAULT_IMAGE = "https://res.cloudinary.com/dszq7efku/image/upload/v1766840376/texture_boardminigame_CardMatching_Default_ww0fgb.png";
+            const TEMPLATE_BG = "https://res.cloudinary.com/dszq7efku/image/upload/v1766840373/texture_boardminigame_CardMatching_cardbg_zclhbm.png";
+
+
+            let activeCard = null;
+
+            function createBoard() {
+                const cols = +colsInput.value;
+                const rows = +rowsInput.value;
+
+                board.innerHTML = "";
+                board.style.gridTemplateColumns = `repeat(${cols}, auto)`;
+
+                for (let i = 0; i < cols * rows; i++) {
+                    const card = document.createElement("div");
+                    card.className = "card-item";
+                    card.style.backgroundImage = `url(${DEFAULT_IMAGE})`;
+
+                    card.onclick = () => {
+                        activeCard = card;
+                        modal.show();
+                    };
+
+                    board.appendChild(card);
+                }
+            }
+
+            document.querySelectorAll(".img-option").forEach(item => {
+                item.onclick = () => {
+                    if (!activeCard)
+                        return;
+
+                    activeCard.className = "card-item";
+                    activeCard.innerHTML = "";
+                    activeCard.style.backgroundImage = "none";
+
+                    if (item.classList.contains("empty-option")) {
+                        activeCard.classList.add("card-empty");
+                    } else if (item.dataset.icon) {
+                        activeCard.style.backgroundImage = `url(${TEMPLATE_BG})`;
+                        const icon = document.createElement("img");
+                        icon.src = item.dataset.icon;
+                        icon.className = "card-icon";
+                        activeCard.appendChild(icon);
+                    } else {
+                        activeCard.style.backgroundImage = `url(${item.src})`;
+                    }
+
+                    modal.hide();
+                };
+            });
+
+            resetBtn.onclick = () => {
+                document.querySelectorAll(".card-item").forEach(card => {
+                    card.className = "card-item";
+                    card.style.backgroundImage = `url(${DEFAULT_IMAGE})`;
+                    card.innerHTML = "";
+                });
+            };
+
+            colsInput.oninput = rowsInput.oninput = createBoard;
+
+            createBoard();
+        </script>
+
+    </body>
+</html>
